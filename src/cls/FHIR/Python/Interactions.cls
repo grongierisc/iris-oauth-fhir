@@ -16,7 +16,7 @@ Method %OnNew(pStrategy As HS.FHIRServer.Storage.Json.InteractionsStrategy) As %
 	set ..PythonModule = $system.Util.GetEnviron("INTERACTION_MODULE")
 
 	if (..PythonPath = "") || (..PythonClassname = "") || (..PythonModule = "") {
-		//quit ##super(pStrategy)
+		quit ##super(pStrategy)
 		set ..PythonPath = "/irisdev/app/src/python/"
 		set ..PythonClassname = "CustomInteraction"
 		set ..PythonModule = "custom"

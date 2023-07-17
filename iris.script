@@ -8,10 +8,6 @@
 
     zn "HSLIB"
 
-    // Enable FHIR SQL Builder
-    Do ##class(HS.HC.FHIRSQL.Utils.Setup).CreateWebApps("HSSYS",1)
-	Do ##class(HS.HC.FHIRSQL.Utils.Setup).DefineDocDBs("HSSYS")
-
     set namespace="FHIRSERVER"
     Set appKey = "/fhir/r4"
     Set strategyClass = "FHIR.Python.InteractionsStrategy"
@@ -21,8 +17,6 @@
     Do ##class(HS.HC.Util.Installer).InstallFoundation(namespace)
     zn namespace
 
-    Do $classMethod("HS.HC.FHIRSQL.Server.FHIRRepository","SetupInteractions")
-
     // load classes
     do $system.OBJ.ImportDir("/irisdev/app/src/cls","*.cls","cdk",.errors,1)
 
@@ -30,14 +24,13 @@
     Do ##class(HS.FHIRServer.Installer).InstallNamespace()
 
     // Install an instance of a FHIR Service into the current namespace
-    Do ##class(HS.FHIRServer.Installer).InstallInstance(appKey, strategyClass, metadataPackages)
+    Do ##class(HS.FHIRServer.Installer).InstallInstance(appKey, 
+                                                        strategyClass,
+                                                        metadataPackages,
+                                                        "FHIR Oauth", // Oauth service name
+                                                        ,   // description
+                                                        1,  // create databases
+                                                        "/path/to/resources",
+                                                        "/path/to/data")
 
-    // Configure FHIR Service instance to accept unauthenticated requests
-    set strategy = ##class(HS.FHIRServer.API.InteractionsStrategy).GetStrategyForEndpoint(appKey)
-    set config = strategy.GetServiceConfigData()
-    set config.DebugMode = 6 // 4=unauthenticated, 6=unauthenticated+reload services
-    set config.MaxSearchResults = 100000
-    do strategy.SaveServiceConfigData(config)
-
-    do ##class(HS.FHIRServer.Tools.DataLoader).SubmitResourceFiles("/irisdev/app/data/fhir", "FHIRSERVER", "/fhir/r4")
     halt
