@@ -139,3 +139,4 @@ __pycache__/
 
 # other
 secret.json
+misc/auth/template.json
