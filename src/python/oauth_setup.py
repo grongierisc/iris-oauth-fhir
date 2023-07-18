@@ -21,7 +21,7 @@ def setup_oauth(filename):
     # setup the oauth2 server definition
 
     oauth2_server = iris.cls("OAuth2.ServerDefinition").OpenByIssuer(secret["other"]["issuer"])
-    if not oauth2_server:
+    if oauth2_server == "":
         oauth2_server = iris.cls("OAuth2.ServerDefinition")._New()
     oauth2_server.IssuerEndpoint = secret["other"]["issuer"]
     oauth2_server.SSLConfiguration = "ssl oauth"
@@ -42,4 +42,6 @@ def setup_oauth(filename):
     client._Save()
 
 if __name__ == '__main__':
-    setup_oauth("/irisdev/app/secret.json")
+    # command line argument is the secret.json file
+    import sys
+    setup_oauth(sys.argv[1])
