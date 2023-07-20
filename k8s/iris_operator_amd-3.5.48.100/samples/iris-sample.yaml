@@ -1,0 +1,169 @@
+## uncommented fields deploy one InterSystems IRIS data server
+
+## WARNING: default password is not reset, to do so include
+## configSource below
+
+## include commented fields for purposes described; see documentation at
+## https://docs.intersystems.com/irislatest/csp/docbook/Doc.View.cls?KEY=AIKO_clusterdef_sample
+
+## update image tags (from ":tag") before using; see list of available images at
+## https://docs.intersystems.com/components/csp/docbook/Doc.View.cls?KEY=PAGE_containerregistry
+
+   apiVersion: intersystems.com/v1alpha1
+   kind: IrisCluster
+   metadata:
+     name: sample
+   spec:
+
+## provide InterSystems IRIS license key if required
+#     licenseKeySecret:
+#       name: iris-key-secret
+
+## specify files used to customize the configurations of
+## InterSystems IRIS nodes, including passwordHash parameter
+## to set the default password, securing InterSystems IRIS
+#     configSource:
+#       name: iris-cpf
+
+## provide repository credentials if required to pull images
+#     imagePullSecrets:
+#       - name: iris-pull-secret
+
+## provide VolumeSource specifications for certificates for each desired TLS feature
+## "common" enables all TLS features, but each particular feature's property is given priority over "common"
+#     tls:
+#       common:
+#         secret:
+#           secretName: tls-certs
+#       mirror:
+#         csi:
+#           driver: secrets-store.csi.k8s.io
+#           readOnly: true
+#           volumeAttributes:
+#             secretProviderClass: "my-provider"
+#       webgateway:
+#         secret:
+#           secretName: wg-certs
+#       superserver:
+#         secret:
+#           secretName: superserver-certs
+#       ecp:
+#         secret:
+#           secretName: ecp-certs
+
+
+## specify platform-specific storage class used to allocate storage
+## volumes (default: use platform-defined class)
+#     storageClassName: iris-ssd-storageclass
+
+## select update strategy (default: RollingUpdate)
+#     updateStrategy:
+#       type: RollingUpdate
+
+## create external IP address(es)for the cluster
+## ("type: LoadBalancer" and "externalTrafficPolicy: Local" are required)
+#     serviceTemplate:
+#       spec:
+#         type: LoadBalancer
+#         externalTrafficPolicy: Local
+
+## define persistent volumes (to be mounted by "volumeMounts:" in node definitions)
+#  volumeClaimTemplates:
+#    - metadata:
+#        name: extra-disk
+#      spec:
+#        accessModes:
+#          - ReadWriteOnce
+#        resources:
+#          requests:
+#            storage: 2Gi
+
+## define ephemeral volumes (to be mounted by "volumeMounts:" in node definitions)
+#  volumes:
+#    - name: my-secret
+#      secret:
+#        secretName: my-secret
+#    - name: my-secret2
+#      secret:
+#        secretName: my-secret2
+#    - name: my-config
+#      configMap:
+#        name: my-config
+
+## topology: defines node types to be deployed; only "data:" is required
+
+     topology:
+       data:
+         image: containers.intersystems.com/intersystems/iris:tag
+
+## deploy a sharded cluster of data nodes and (optionally) compute
+## nodes; if not included, "data:" definition in "topology:" deploys
+## a single data server, "compute:" adds application servers
+#         shards: 2
+
+## deploy mirrored data nodes or data server (default: nonmirrored)
+#         mirrored: true
+
+## override default size and other attributes of predefined storage 
+## volumes for data nodes (additional volume names: storageWIJ, 
+## storageJournal1, storageJournal2); can also be included in
+## "compute:" definition
+#         storageDB:
+#           resources:
+#             requests:
+#               storage: 10Gi
+#           storageClassName: my-storageclass
+
+## constrain nodes to platform-specific availability zones (can be
+## included in other node definitions)
+#         preferredZones:
+#           - us-east1-a
+#           - us-east1-b
+
+## mount volumes defined in "volumeClaimTemplates:" (persistent) and "volumes:" (ephemeral)
+#         volumeMounts:
+#           - mountPath: "/extra-disk"
+#             name: extra-disk
+#           - mountPath: "/my-secret"
+#             name: my-secret
+#           - mountPath: "/my-config"
+#             name: my-config
+
+## specify compatibility version if deploying InterSystems IRIS containers other than 2022.2.0
+#         compatibilityVersion: "2022.3.0"
+
+## deploy compute nodes, or application servers if "shards:" not included;
+## use "replicas:" to specify how many
+#       compute:
+#         image: containers.intersystems.com/intersystems/iris:tag
+#         replicas: 2
+
+## mount ephemeral volume defined in "volumes:"
+#         volumeMounts:
+#           - mountPath: "/my-secret2"
+#             name: my-secret2
+
+## specify compatibility version if deploying InterSystems IRIS containers other than 2022.2.0
+#         compatibilityVersion: "2022.3.0"
+
+## deploy arbiter for mirrored data nodes (or data server)
+#       arbiter:
+#         image: containers.intersystems.com/intersystems/arbiter:tag
+
+## deploy webgateway (web server) nodes
+#       webgateway:
+#         image: containers.intersystems.com/intersystems/webgateway:tag
+#         type: apache
+#         replicas: 2
+#         applicationPaths:
+#           - /external
+#           - /internal
+#         alternativeServers: LoadBalancing
+
+## deploy System Alerting and Monitoring (SAM) with InterSystems IRIS
+#      sam:
+#        image: containers.intersystems.com/intersystems/sam:tag
+
+## deploy InterSystems API Manager (IAM) with InterSystems IRIS
+#      iam:
+#        image: containers.intersystems.com/intersystems/iam:tag

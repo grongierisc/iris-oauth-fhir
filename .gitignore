@@ -140,3 +140,7 @@ __pycache__/
 # other
 secret.json
 misc/auth/template.json
+
+# k8s datas
+k8s/data/**
+k8s/iris_operator_amd-3.5.48.100/image/iris_operator_amd-3.5.48.100-docker.tgz

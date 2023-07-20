@@ -1,0 +1,8 @@
+apiVersion: v1
+description: 'IRIS Operator by InterSystems'
+name: iris-operator-amd
+version: 3.5.48
+appVersion: 3.5.48.100
+maintainers:
+  - name: intersystems
+    email: support@intersystems.com

@@ -1,0 +1,37 @@
+# GKE returns Major:"1", Minor:"10+"
+{{- $major := default "0" .Capabilities.KubeVersion.Major | trimSuffix "+" | int64 }}
+{{- $minor := default "0" .Capabilities.KubeVersion.Minor | trimSuffix "+" | int64 }}
+{{- if .Values.apiserver.enableValidatingWebhook }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validators.intersystems.com
+  labels:
+    {{- include "iris-operator.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+webhooks:
+- name: irisclusters.validators.intersystems.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/validators.intersystems.com/v1alpha1/irisclustervalidators
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - operations:
+    - CREATE
+    - UPDATE
+    apiGroups:
+    - intersystems.com
+    apiVersions:
+    - "*"
+    resources:
+    - irisclusters
+  admissionReviewVersions: ["v1beta1"]
+  failurePolicy: Fail
+{{- if and (ge $major 1) (ge $minor 12) }}
+  sideEffects: None
+{{- end }}
+{{- end }}

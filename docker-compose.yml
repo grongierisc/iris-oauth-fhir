@@ -1,6 +1,7 @@
 version: '3.6'
 services:
   iris:
+    image: iris-oauth-fhir-iris:latest
     build: 
       context: .
       dockerfile: Dockerfile
@@ -15,7 +16,7 @@ services:
       - ./:/irisdev/app/
       - ./data:/data
     environment:
-      - ISC_CPF_MERGE_FILE=/irisdev/app/merge.cpf
+      - ISC_CPF_MERGE_FILE=/irisdev/app/common.cpf
       - ISC_OAUTH_SECRET_PATH=/irisdev/app/misc/auth/secret.json
       - ISC_DATA_DIRECTORY=/data/iris
 

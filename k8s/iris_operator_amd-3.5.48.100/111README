@@ -1,0 +1,34 @@
+Thank you for downloading the InterSystems IRIS Data Platform Kubernetes Operator.
+
+These are the steps for installing this:
+
+1) get tarball from WRC
+
+2) unpack tarball using 'tar' like this:
+   $ tar xvfz iris-operator_3.5.48.100.tgz
+
+3) load Docker images from tarball:
+   $ docker load -i iris_operator-3.5.48.100/image/iris_operator-3.5.48.100-docker.tgz
+
+4) look at loaded images to determine name (and tag as necessary):
+   $ docker images | awk '/iris-operator/{print $1":"$2; exit 0}'
+   intersystems/iris-operator:3.5.48.100
+
+5) push to your favorite registry:
+   $ docker tag intersystems/iris-operator:3.5.48.100 my.registry/intersystems/iris-operator:3.5.48.100
+   $ docker push my.registry/intersystems/iris-operator:3.5.48.100
+
+6) update the image in the following file to match the above
+     iris-operator_3.5.48.100/chart/iris-operator/values.yaml
+
+7) run the IRIS Kubernetes operator
+     if Helm 3.x not present:
+        $ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+     install the Helm chart:
+        $ helm install intersystems iris-operator_3.5.48.100/chart/iris-operator
+
+8) verify IRIS Kubernetes Operator is running:
+   $ kubectl get pods
+   NAME                                          READY   STATUS    RESTARTS   AGE
+   intersystems-iris-operator-575bddf99f-jltpm   1/1     Running   0          12m
+
