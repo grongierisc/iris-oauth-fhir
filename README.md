@@ -55,21 +55,21 @@ This part is inspired by the article [Adding Google Social Login into InterSyste
 11. In Edit app registration, complete the field values as follow:
 App Information (use your email for user support email):
 
-![img](misc/img/Edit_app_registration.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Edit_app_registration.jpg?raw=true)
 
 
-12. For Authorized domains, it is not necessary to set anything because this sample will use localhost. Set the developer contact information with your email and click the SAVE AND CONTINUE button:
+1.  For Authorized domains, it is not necessary to set anything because this sample will use localhost. Set the developer contact information with your email and click the SAVE AND CONTINUE button:
 
-![img](misc/img/Edit_app_registration_2.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Edit_app_registration_2.jpg?raw=true)
 
 
 12. Click ADD OR REMOVE SCOPES and select the following scopes, scroll the dialog, and click the UPDATE button:
 
-![img](misc/img/Scope_openid.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Scope_openid.jpg?raw=true)
 
 13. Include your email into the Test users list (using the +ADD USERS button) and click the SAVE AND CONTINUE button:
 
-![img](misc/img/Test_user.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Test_user.jpg?raw=true)
 
 15. The wizard shows you the Summary of the filled fields. Scroll the screen and click the BACK TO DASHBOARD button.
 16. Now, it is time to configure the credentials for this new project. Select the option Credentials:
@@ -82,13 +82,13 @@ App Information (use your email for user support email):
 
 18. Select Web application option and complete the field values as follow:
 
-![img](misc/img/Create_OpenId.jpg)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Create_OpenId.jpg)
 
 We will be using postman for the demo, but if you want to use the sample application, you will need to add the following redirect URIs, same goes for the JavaScript origins.
 
 19. Click the CREATE button and copy the Client ID and Client Secret values:
 
-![img](misc/img/Secret.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Secret.jpg?raw=true)
 
 You are done with the Google Cloud Platform configuration.
 
@@ -138,7 +138,7 @@ The endpoint is `httsp://localhost:4443/fhir/r4/`.
 
 1. Create a new request in Postman and go to the Authorization tab. Select OAuth 2.0 as the type :
 
-![img](misc/img/Postman_Auth.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Auth.jpg?raw=true)
 
 2. On the Configure New Token dialog, set the following values:
 
@@ -146,24 +146,24 @@ The access url token is : `https://accounts.google.com/o/oauth2/token`
 Scopes is : `openid`
 Client Id and Client Secret are the one you got from the Google Cloud Platform.
 
-![img](misc/img/Postman_Config.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Config.jpg?raw=true)
 
 3. Click the Request Token button and you will be redirected to the Google login page:
 
-![img](misc/img/Postman_Get_Token1.png)
-![img](misc/img/Postman_Get_Token2.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Get_Token1.jpg?raw=true)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Get_Token2.jpg?raw=true)
 
 4. Make use of the token to get the patient list:
 
-![img](misc/img/Postman_Use_Token.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Use_Token.jpg?raw=true)
 
 5. Select in Token type, ID Token and click the Use Token button:
 
-![img](misc/img/Postman_Token_Id.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Token_Id.jpg?raw=true)
 
 6. You will get the patient list:
 
-![img](misc/img/Postman_Success.png)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Success.jpg?raw=true)
 
 What journey, hope you enjoyed it.
 
