@@ -55,7 +55,7 @@ docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-l
 
 # create configmap
 
-kubectl create cm iriscluster-config --from-file common.cpf --from-file CSP-merge.ini
+kubectl create cm iriscluster-config --from-file common.cpf 
 
 # create secret
 

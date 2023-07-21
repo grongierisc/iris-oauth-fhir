@@ -4,8 +4,8 @@
 replicaCount: 1
 operator:
   registry: k3d-registry.localhost:5000
-  repository: intersystems/iris-operator-amd
-  tag: 3.5.48.100
+  repository: iscinternal/iris-operator-amd
+  tag: 3.6.6.100
 
   # Operator Environment Variables
   useFQDN: true 
