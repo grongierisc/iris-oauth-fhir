@@ -10,10 +10,11 @@ k3d registry create registry.localhost --port 5000
 ## mac
 
 sudo nano /etc/hosts
+add k3d-registry.localhost to localhost
 
 # Start the culster
 
-k3d cluster create demo --servers 1 --agents 2 --volume $HOME/git/iris-oauth-fhir/k8s/data:/var/lib/rancher/k3s/storage@all --registry-use k3d-registry.localhost:5000 -p "8081:80@loadbalancer" -p "4443:443@loadbalancer" --api-port 6550
+k3d cluster create demo --servers 1 --agents 2 --volume $(pwd)/k8s/data:/var/lib/rancher/k3s/storage@all --registry-use k3d-registry.localhost:5000 -p "8081:80@loadbalancer" -p "4443:443@loadbalancer" --api-port 6550 --volume "$(pwd)/k8s/config/traefik-config.yaml:/var/lib/rancher/k3s/server/manifests/traefik-config.yaml"
 
 # tag operator image
 
@@ -43,18 +44,6 @@ docker tag iris-oauth-fhir-iris:latest k3d-registry.localhost:5000/iris-oauth-fh
 
 docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
 
-# deploy iris-oauth-fhir
-
-kubectl apply -f config/iris-simple.yaml
-
-# forward port
-
-kubectl port-forward pods/sample-data-0 1975:1972 52775:52773 -n default
-
-# remove deployment
-
-kubectl delete -f config/iris-simple.yaml
-
 # add a web gateway
 ## tag web gateway
 
@@ -63,14 +52,6 @@ docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-li
 ## push web gateway
 
 docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
-
-## deploy iris + web gateway
-
-kubectl apply -f config/iris-web.yaml
-
-# delete pvc
-
-kubectl delete pvc iris-data-sample-data-0 -n default
 
 # create configmap
 
@@ -90,7 +71,7 @@ kubectl create secret tls tls-secret --key k8s/tls/tls.key --cert k8s/tls/tls.cr
 
 # deploy iris + web gateway + tls
 
-kubectl apply -f k8s/config/iris-web-merge.yaml
+kubectl apply -f k8s/config/iris-sample.yaml
 
 # update a configmap
 

@@ -1,8 +1,21 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-prefix 
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /sample
+      - /demo
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
   namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: default-strip-prefix@kubernetescrd
 spec:
   rules:
   - http:
@@ -13,6 +26,12 @@ spec:
           service:
             name: sample-webgateway
             port:
-              number: 80
-    tls:
-      passthrough: true
+              number: 443
+      - path: /demo
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-webgateway
+            port:
+              number: 443
+  
