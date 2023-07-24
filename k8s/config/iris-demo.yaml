@@ -166,6 +166,8 @@ spec:
         - /csp/sys
         - /fhir/r4
       alternativeServers: LoadBalancing
+      loginSecret:
+        name: iris-webgateway-secret 
 
 ## deploy System Alerting and Monitoring (SAM) with InterSystems IRIS
 #      sam:
