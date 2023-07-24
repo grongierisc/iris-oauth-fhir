@@ -1,5 +1,8 @@
 # iris-oauth-fhir
 
+![img](https://i0.wp.com/sunfox.org/blog/wp-content/uploads/2007/05/openid2.png)
+![fhir](https://v2k8e7u2.rocketcdn.me/wp-content/uploads/2022/11/HL7-FHIR-LOGO.png.webp)
+
 This is a sample application that demonstrates how to use the [InterSystems IRIS for Health FHIR Repository](https://docs.intersystems.com/irisforhealthlatest/csp/docbook/DocBook.UI.Page.cls?KEY=HXFHIR) to build a FHIR Repository with OAuth2 authorization, the FHIR endpoint will be the resource server and Google OpenId will be the authorization server.
 
 ## Prerequisites
