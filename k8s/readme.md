@@ -1,11 +1,43 @@
-# K3D + iris-operator + iris-oauth-fhir
+# 1. K3D + iris-operator + iris-oauth-fhir
+
+![k8s](https://kubernetes.io/images/kubernetes-horizontal-color.png)
+![fhir](https://v2k8e7u2.rocketcdn.me/wp-content/uploads/2022/11/HL7-FHIR-LOGO.png.webp)
 
 This is a sample to deploy [iris-oauth-fhir](https://github.com/grongierisc/iris-oauth-fhir) on [k3d](https://k3d.io/) with [IKO](https://docs.intersystems.com/irisforhealth20231/csp/docbook/Doc.View.cls?KEY=PAGE_deployment_iko).
 * [iris-oauth-fhir](https://github.com/grongierisc/iris-oauth-fhir) is a sample to deploy a FHIR server with OAuth2 authentication with [InterSystems IRIS for Health](https://www.intersystems.com/products/intersystems-iris-for-health/) as a resource server and Google OpenId as an authorization server.
 * [k3d](https://k3d.io/) is a lightweight wrapper to run [k3s](https://k3s.io/) (Rancher Lab's minimal Kubernetes distribution) in docker.
 * [IKO](https://docs.intersystems.com/irisforhealth20231/csp/docbook/Doc.View.cls?KEY=PAGE_deployment_iko) is a tool to deploy InterSystems IRIS for Health on Kubernetes.
 
-## Prerequisites
+# 2. Table of Contents
+
+- [1. K3D + iris-operator + iris-oauth-fhir](#1-k3d--iris-operator--iris-oauth-fhir)
+- [2. Table of Contents](#2-table-of-contents)
+  - [2.1. Prerequisites](#21-prerequisites)
+  - [2.2. Installation](#22-installation)
+    - [2.2.1. Warning](#221-warning)
+    - [2.2.2. Build iris-oauth-fhir image](#222-build-iris-oauth-fhir-image)
+    - [2.2.3. Download k3d](#223-download-k3d)
+    - [2.2.4. Create a registry](#224-create-a-registry)
+      - [2.2.4.1. add registry to hosts](#2241-add-registry-to-hosts)
+        - [2.2.4.1.1. mac](#22411-mac)
+        - [2.2.4.1.2. windows](#22412-windows)
+  - [2.3. Start the culster](#23-start-the-culster)
+    - [2.3.1. Check the cluster](#231-check-the-cluster)
+    - [2.3.2. Install iris-operator](#232-install-iris-operator)
+      - [2.3.2.1. install helm](#2321-install-helm)
+      - [2.3.2.2. install iris-operator](#2322-install-iris-operator)
+    - [2.3.3. Install iriscluster](#233-install-iriscluster)
+      - [2.3.3.1. What are we going to deploy?](#2331-what-are-we-going-to-deploy)
+      - [2.3.3.2. Prepare the deployment for the data node](#2332-prepare-the-deployment-for-the-data-node)
+      - [2.3.3.3. Prepare the deployment for the web gateway node](#2333-prepare-the-deployment-for-the-web-gateway-node)
+    - [2.3.4. Deploy iriscluster](#234-deploy-iriscluster)
+    - [2.3.5. Deploy ingress](#235-deploy-ingress)
+  - [2.4. Easy scale](#24-easy-scale)
+  - [2.5. Quick init](#25-quick-init)
+  - [2.6. Quick deployment](#26-quick-deployment)
+
+
+## 2.1. Prerequisites
 
 * [Docker](https://docs.docker.com/get-docker/)
 * [Git](https://git-scm.com/downloads)
@@ -14,13 +46,13 @@ This is a sample to deploy [iris-oauth-fhir](https://github.com/grongierisc/iris
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [IKO](https://docs.intersystems.com/irisforhealth20231/csp/docbook/Doc.View.cls?KEY=PAGE_deployment_iko)
 
-## Installation
+## 2.2. Installation
 
-### Warning
+### 2.2.1. Warning
 
 This will be a long journey, but it will be worth it. You will learn a lot of things about Kubernetes and InterSystems IRIS for Health.
 
-### Build iris-oauth-fhir image
+### 2.2.2. Build iris-oauth-fhir image
 
 First clone this repository:
 
@@ -32,12 +64,12 @@ And build the iris-oauth-fhir image as it is explained in the [README.md](https:
 
 Next we will install k3d.
 
-### Download k3d
+### 2.2.3. Download k3d
 
 ```bash
 curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
 ```
-### Create a registry
+### 2.2.4. Create a registry
 
 We must create a registry because for now Docker Desktop does not serve it's internal registry as an `containerd` registry. An experimental feature is available to use the Docker Desktop registry as a `containerd` registry, but it is not stable yet. So we will use k3d to create a registry.
 
@@ -49,21 +81,21 @@ This command will create a registry on port 5000. We will use it to push our ima
 
 Now we will add the registry to our hosts file. Like this we will be able to use it as a DNS name. This is important because we will use it in our deployment. This DNS name will be the same for our host and for Kubernetes.
 
-#### add registry to hosts
-##### mac
+#### 2.2.4.1. add registry to hosts
+##### 2.2.4.1.1. mac
 
 ```bash
 sudo sh -c 'echo "127.0.0.1 k3d-registry.localhost" >> /etc/hosts'
 ```
 
-##### windows
+##### 2.2.4.1.2. windows
 
 * Open Notepad as an administrator.
 * Open the file C:\Windows\System32\Drivers\etc\hosts.
 * Add the following line to the end of the file: 127.0.0.1 k3d-registry.localhost.
 * Save the file and close Notepad.
 
-## Start the culster
+## 2.3. Start the culster
 
 Now we will start the cluster with this command line:
 
@@ -94,7 +126,11 @@ spec:
     - "--serversTransport.insecureSkipVerify=true"
 ```
 
-### Check the cluster
+### 2.3.1. Check the cluster
+
+Just to give you an idea of what a Kubernetes cluster looks like, here is a diagram:
+
+![k8s](https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg)
 
 ```bash
 kubectl get nodes
@@ -112,7 +148,7 @@ k3d-demo-agent-1           Ready    <none>                 10m   v1.21.2+k3s1
 This means that the cluster is ready. You have now a Kubernetes cluster with one master node and two worker nodes.
 🥳
 
-### Install iris-operator
+### 2.3.2. Install iris-operator
 
 Now we will install iris-operator. iris-operator is a Kubernetes operator to deploy InterSystems IRIS for Health on Kubernetes. It is available on the [WRC](https://wrc.intersystems.com/wrc/coDistGen.csp) or on the [InterSystems Container Registry](https://containers.intersystems.com/).
 We will use the version 3.6.6.100.
@@ -136,7 +172,7 @@ docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
 ```
 
 To install the Iko operator, we will use helm. Helm is a package manager for Kubernetes. It is available [here](https://helm.sh/).
-#### install helm
+#### 2.3.2.1. install helm
 
 ```bash
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
@@ -144,7 +180,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-#### install iris-operator
+#### 2.3.2.2. install iris-operator
 
 ```bash
 helm install intersystems k8s/iris_operator_amd-3.6.6.100/chart/iris-operator
@@ -163,9 +199,9 @@ NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
 intersystems-iris-operator  1/1     1            1           2m
 ```
 
-### Install iriscluster
+### 2.3.3. Install iriscluster
 
-#### What are we going to deploy?
+#### 2.3.3.1. What are we going to deploy?
 
 We will deploy this architecture:
 
@@ -235,9 +271,13 @@ This mean that we will have to:
   * Provide some how the `CSP.ini` file to the web gateway node.
   * Same for the `httpd-csp.conf` file to configure the apache server.
 
-#### Prepare the deployment for the data node
+#### 2.3.3.2. Prepare the deployment for the data node
 
 To provide the `common.cpf` file to the data node, we will use a config map. A config map is a Kubernetes object to store configuration files. We will use the `common.cpf` file we have in this repository.
+
+Here is an schema of a config map:
+
+![configmap](https://programmer.ink/images/think/ef4e6242dfbfe4c4b9594b97d23059f7.jpg)
 
 To create the config map, we will use this command line:
 
@@ -265,7 +305,7 @@ docker tag iris-oauth-fhir-iris:latest k3d-registry.localhost:5000/iris-oauth-fh
 docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
 ```
 
-#### Prepare the deployment for the web gateway node
+#### 2.3.3.3. Prepare the deployment for the web gateway node
 
 The web gateway node is a bit different because we will not be using the `proxyiris:latest` image. We will use the `intersystems/webgateway:2023.1.1.380.0-linux-amd64` image. This image is available on the [InterSystems Container Registry](https://containers.intersystems.com/).
 This image is the `raw` web gateway image. 
@@ -302,7 +342,7 @@ docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-li
 docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
 ```
 
-### Deploy iriscluster
+### 2.3.4. Deploy iriscluster
 
 Now we will install IrisCluster. IrisCluster is a Kubernetes custom resource to deploy InterSystems IRIS for Health on Kubernetes.
 It's defined in the `k8s/config/iris-sample.yaml` file.
@@ -575,55 +615,120 @@ sample-data-0                                    1/1     Running             0  
 sample-webgateway-0                              0/1     ContainerCreating   0          17s
 ```
 
+To get details about the pods, you can use this command line:
 
-# tag iris-oauth-fhir
+```bash
+kubectl describe pod sample-data-0
+```
 
-docker tag iris-oauth-fhir-iris:latest k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
+### 2.3.5. Deploy ingress
 
-# push iris-oauth-fhir
+![ingress](https://d33wubrfki0l68.cloudfront.net/91ace4ec5dd0260386e71960638243cf902f8206/c3c52/docs/images/ingress.svg)
 
-docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
+Now we will deploy an ingress. An ingress is a Kubernetes object to route the traffic to the right pod. We will use the `k8s/config/ingress.yaml` file.
 
-# add a web gateway
-## tag web gateway
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: default
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sample-webgateway
+            port:
+              number: 443
+```
 
-docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-linux-amd64 k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+This ingress will route the traffic to the `sample-webgateway` service on port 443.
 
-## push web gateway
+To deploy the ingress, we will use this command line:
 
-docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
-
-# create configmap
-
-kubectl create cm iriscluster-config --from-file common.cpf 
-
-# create secret
-
-kubectl create secret generic iriscluster-secret --from-file misc/auth/secret.json
-kubectl create secret generic iris-webgateway-secret --from-literal='username=CSPSystem' --from-literal='password=]]]U1lT'
-
-# create certificate
-
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=*.localhost"
-
-# add certificate to kubernetes
-
-kubectl create secret tls tls-secret --key k8s/tls/tls.key --cert k8s/tls/tls.crt
-
-# deploy iris + web gateway + tls
-
-kubectl apply -f k8s/config/iris-sample.yaml
-
-# update a configmap
-
-kubectl create cm iriscluster-config --from-file common.cpf --from-file CSP-merge.ini -o yaml --dry-run=client | kubectl replace -f -
-
-# deploy ingress
-
+```bash
 kubectl apply -f k8s/config/ingress.yaml
+```
 
+To check if the ingress is running, you can use this command line:
 
-## Quick init
+```bash
+kubectl get ingress
+```
+
+To test the whole thing, you can use this command line:
+
+```bash
+curl -k https://localhost:4443/fhir/r4/metadata
+```
+
+Congratulations, you have deployed iris-oauth-fhir on Kubernetes. 🥳
+
+## 2.4. Easy scale
+
+If you want to create a new tenant, you can `iris-demo.yaml` file.
+
+Basically, it's the same as the `iris-sample.yaml` file, but juste the name of the tenant change.
+
+You can deploy it with this command line:
+
+```bash
+kubectl apply -f k8s/config/iris-demo.yaml
+```
+
+You can use a new ingress to route the traffic to the new tenant.
+
+```yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-prefix 
+  namespace: default
+spec:
+  stripPrefix:
+    prefixes:
+      - /sample
+      - /demo
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: default-strip-prefix@kubernetescrd
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /sample
+        pathType: Prefix
+        backend:
+          service:
+            name: sample-webgateway
+            port:
+              number: 443
+      - path: /demo
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-webgateway
+            port:
+              number: 443
+```
+
+Two new routes are added:
+
+* `/sample` to route the traffic to the `sample-webgateway` service.
+* `/demo` to route the traffic to the `demo-webgateway` service.
+
+You can scale the compte node and so, but for that you will need a license key.
+
+## 2.5. Quick init
 
 Tag images
 
@@ -641,7 +746,7 @@ docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-l
 docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
 ```
 
-## Quick deployment
+## 2.6. Quick deployment
 
 Delete the cluster:
 
