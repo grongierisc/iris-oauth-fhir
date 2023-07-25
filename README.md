@@ -127,6 +127,8 @@ docker-compose build
 }
 ```
 
+⚠️ Warning : `auth_provider_x509_cert_url` by default is `https://www.googleapis.com/oauth2/v1/certs` but it is deprecated, you need to use `https://www.googleapis.com/oauth2/v3/certs` instead.
+
 4. Run the docker image:
 
 ```bash
@@ -171,4 +173,3 @@ Client Id and Client Secret are the one you got from the Google Cloud Platform.
 What journey, hope you enjoyed it.
 
 More to come, stay tuned. We will be dealing with kubernetes and the FHIR repository in the next part.
-

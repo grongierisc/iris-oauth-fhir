@@ -128,10 +128,6 @@ spec:
 
 ### 2.3.1. Check the cluster
 
-Just to give you an idea of what a Kubernetes cluster looks like, here is a diagram:
-
-![k8s](https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg)
-
 ```bash
 kubectl get nodes
 ```
@@ -285,6 +281,19 @@ To create the config map, we will use this command line:
 kubectl create cm iriscluster-config --from-file common.cpf 
 ```
 
+⚠️ info : The `common.cpf` is here to set the default password. 
+Two passwords are set in the `common.cpf` file:
+* `SuperUser` password is set to `SYS`
+  * Is the admin user
+* `CSPSystem` password is set to `SYS`
+  * Is the user to connect the wabgateway to the data node
+
+Theses passwords are stored in thier hashed form. To generate the hashed form, we will use this command line:
+
+```bash
+docker run --rm -it containers.intersystems.com/intersystems/passwordhash:1.1 -algorithm SHA512 -workfactor 10000
+```
+
 To provide the `secret.json` file to the data node, we will use a secret. A secret is a Kubernetes object to store sensitive data. We will use the `secret.json` file we have in this repository.
 
 To create the secret, we will use this command line:
@@ -329,7 +338,7 @@ In the `docker-compose.yaml` file we had to configure the `CSP.ini` file and the
 To create the secret, we will use this command line:
 
 ```bash
-kubectl create secret generic iris-webgateway-secret --from-literal='username=CSPSystem' --from-literal='password=]]]U1lT'
+kubectl create secret generic iris-webgateway-secret --from-literal='username=CSPSystem' --from-literal='password=SYS'
 ```
 
 We still need to push the `intersystems/webgateway:2023.1.1.380.0-linux-amd64` image to our registry. We will use the same command line as before:
