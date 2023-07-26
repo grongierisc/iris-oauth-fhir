@@ -5,6 +5,7 @@ Parameter OAuth2TokenHandlerClass As %String = "FHIR.Python.OAuth2Token";
 
 Method %OnNew(pStrategy As HS.FHIRServer.Storage.Json.InteractionsStrategy) As %Status
 {
+	quit ##super(pStrategy) // ignore this strategy
 	// %OnNew is called when the object is created.
 	// The pStrategy parameter is the strategy object that created this object.
 	// The default implementation does nothing
@@ -16,7 +17,6 @@ Method %OnNew(pStrategy As HS.FHIRServer.Storage.Json.InteractionsStrategy) As %
 	set ..PythonModule = $system.Util.GetEnviron("INTERACTION_MODULE")
 
 	if (..PythonPath = "") || (..PythonClassname = "") || (..PythonModule = "") {
-		quit ##super(pStrategy)
 		set ..PythonPath = "/irisdev/app/src/python/"
 		set ..PythonClassname = "CustomInteraction"
 		set ..PythonModule = "custom"

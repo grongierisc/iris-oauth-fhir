@@ -1,4 +1,4 @@
-FROM intersystemsdc/irishealth-community:preview as builder
+FROM intersystemsdc/irishealth-community:latest as builder
 
 ##### first part of the script
 
@@ -12,11 +12,12 @@ USER ${ISC_PACKAGE_MGRUSER}
 RUN \
 	--mount=type=bind,src=.,dst=/irisdev/app \
 	--mount=type=bind,src=./iris.script,dst=/tmp/iris.script \
+	pip3 install -r /irisdev/app/requirements.txt && \
 	iris start IRIS && \
 	iris session IRIS < /tmp/iris.script && \
 	iris stop iris quietly
 
-FROM intersystemsdc/irishealth-community:preview as final
+FROM intersystemsdc/irishealth-community:latest as final
 
 ##### end of multi stage build
 
@@ -40,6 +41,11 @@ ENV IRISPASSWORD "SYS"
 ENV IRISNAMESPACE "FHIRSERVER"
 ENV IRISINSTALLDIR $ISC_PACKAGE_INSTALLDIR
 ENV LD_LIBRARY_PATH=$IRISINSTALLDIR/bin:$LD_LIBRARY_PATH
+
+# copy the python requirements file
+COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./requirements.txt /irisdev/app/requirements.txt
+
+RUN pip3 install -r /irisdev/app/requirements.txt
 
 # add the entrypoint script
 COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./entrypoint.sh /entrypoint.sh

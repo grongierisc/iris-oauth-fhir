@@ -7,6 +7,7 @@ Parameter InteractionsClass = "FHIR.Python.Interactions";
 
 Method GetMetadataResource() As %DynamicObject
 {
+	quit ##super() // ignore the python class for now
 	set ..PythonPath = $system.Util.GetEnviron("STRATEGY_PATH")
 	// Then set the python class name from the env var
 	set ..PythonClassname = $system.Util.GetEnviron("STRATEGY_CLASS")
@@ -14,7 +15,6 @@ Method GetMetadataResource() As %DynamicObject
 	set ..PythonModule = $system.Util.GetEnviron("STRATEGY_MODULE")
 
 	if (..PythonPath = "") || (..PythonClassname = "") || (..PythonModule = "") {
-		quit ##super()
 		set ..PythonPath = "/irisdev/app/src/python/"
 		set ..PythonClassname = "CustomStrategy"
 		set ..PythonModule = "custom"
