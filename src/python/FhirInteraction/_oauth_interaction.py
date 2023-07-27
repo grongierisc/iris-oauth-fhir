@@ -18,6 +18,12 @@ class OAuthInteraction(object):
 
     verify_search_results:bool = None
 
+    already_verified = False
+    
+    last_time_verified = None
+    
+    time_interval = 5
+
     @abc.abstractmethod
     def set_instance(self, token:str,oauth_client:str,base_url:str,username:str):
         """

@@ -44,6 +44,7 @@ Method VerifySearchResultsGet() As %Boolean [ CodeMode = expression ]
 
 Method %OnNew(pSchema As HS.FHIRServer.Schema) As %Status
 {
+	$$$FSLog("FHIR.Python.OAuth2Token::%OnNew()")
 	// %OnNew is called when the object is created.
 	// The pStrategy parameter is the strategy object that created this object.
 	// The default implementation does nothing
@@ -59,7 +60,6 @@ Method %OnNew(pSchema As HS.FHIRServer.Schema) As %Status
 		set ..PythonClassname = "CustomOAuthInteraction"
 		set ..PythonModule = "custom"
 	}
-
 
 	// Then set the python class
 	do ..SetPythonPath(..PythonPath)
@@ -80,13 +80,19 @@ Method SetInstance(
 	pBaseURL As %String = "",
 	pUsername As %String = "")
 {
+	// Must specify an OAuth 2.0 Client name if going to handle a token.
+	If (pTokenString '= "") && (pOAuthClient = "") {
+		$$$FSLog("OAuth access token received on end point that has no OAuth 2.0 Client defined")
+		$$$ThrowFHIR($$$HttpOnlyResponse(403))
+	}
+
 	if $ISOBJECT(..PythonClass) {
 		Try {
 			do ..PythonClass."set_instance"(pTokenString, pOAuthClient, pBaseURL, pUsername)
 		}
 		Catch ex {
 			$$$FSLog($system.Status.GetOneStatusText(ex.AsStatus()))
-			throw ##class(%Exception.SystemException).%New("Token is invalid")
+			$$$ThrowFHIR($$$HttpOnlyResponse(401))
 		}
 		
 	}
