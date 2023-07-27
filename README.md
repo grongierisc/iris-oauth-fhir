@@ -85,13 +85,13 @@ App Information (use your email for user support email):
 
 18. Select Web application option and complete the field values as follow:
 
-![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Create_OpenId.jpg)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Create_OpenId.jpg?raw=true)
 
 We will be using postman for the demo, but if you want to use the sample application, you will need to add the following redirect URIs, same goes for the JavaScript origins.
 
 19. Click the CREATE button and copy the Client ID and Client Secret values:
 
-![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Secret.jpg?raw=true)
+![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Secrets.jpg?raw=true)
 
 You are done with the Google Cloud Platform configuration.
 
