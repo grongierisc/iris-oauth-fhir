@@ -45,7 +45,11 @@ ENV LD_LIBRARY_PATH=$IRISINSTALLDIR/bin:$LD_LIBRARY_PATH
 # copy the python requirements file
 COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./requirements.txt /irisdev/app/requirements.txt
 
+# install the python requirements
 RUN pip3 install -r /irisdev/app/requirements.txt
+
+# copy the python source code
+COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./src/python /irisdev/app/src/python
 
 # add the entrypoint script
 COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./entrypoint.sh /entrypoint.sh

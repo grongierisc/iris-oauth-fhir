@@ -11,8 +11,6 @@ from google.auth.transport import requests
 
 import requests as rq
 
-
-
 # The following is an example of a custom OAuthInteraction class that
 class CustomOAuthInteraction(OAuthInteraction):
     

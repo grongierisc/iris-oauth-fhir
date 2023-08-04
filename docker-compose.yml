@@ -12,13 +12,9 @@ services:
       - 1972
       - 8083:52773
       - 53773
-    volumes:
-      - ./:/irisdev/app/
-      - ./data:/data
     environment:
       - ISC_CPF_MERGE_FILE=/irisdev/app/common.cpf
       - ISC_OAUTH_SECRET_PATH=/irisdev/app/misc/auth/secret.json
-      - ISC_DATA_DIRECTORY=/data/iris
 
   webgateway:
     build:
