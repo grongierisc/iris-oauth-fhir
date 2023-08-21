@@ -164,6 +164,7 @@ spec:
       replicas: 1
       applicationPaths:
         - /csp/sys
+        - /csp/healthshare
         - /fhir/r4
       alternativeServers: LoadBalancing
       loginSecret:
