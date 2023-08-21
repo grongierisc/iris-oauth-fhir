@@ -39,7 +39,7 @@ class CustomOAuthInteraction(OAuthInteraction):
         if global_time[token[0:50]]:
             self.last_time_verified = global_time[token[0:50]]
 
-        if self.last_time_verified and (time.time() - self.last_time_verified) < self.time_interval:
+        if self.last_time_verified and (time.time() - float(self.last_time_verified)) < self.time_interval:
             # the token was verified less than 5 seconds ago, skip the verification
             return
 
@@ -66,7 +66,7 @@ class CustomOAuthInteraction(OAuthInteraction):
             self.clear_instance()
             raise e
         # token is valid, set the last time verified to now
-        global_time[token[0:50]]=time.time()
+        global_time[token[0:50]]=str(time.time())
 
     def verify_token(self,token:str):
         # check if the token is an access token or an id token
