@@ -1,13 +1,13 @@
 import os
+import sys
 
-# setup the environment
-os.environ['IRISNAMESPACE'] = '%SYS'
-
-import iris
 import json
 
-
 def setup_oauth(filename):
+
+    os.environ['IRISNAMESPACE'] = '%SYS'
+    import iris
+
     # read the secret.json file
     with open(filename) as f:
         secret = json.load(f)
@@ -41,7 +41,49 @@ def setup_oauth(filename):
     client.ClientId = secret["web"]["client_id"]
     client._Save()
 
+    # swith namespace to the FHIRSERVER namespace
+    iris.system.Process.SetNamespace("FHIRSERVER")
+
+    # set the oauth2 client name
+    config = iris.cls('HS.Util.RESTCSPConfig')._OpenId(1)
+    config.OAuthClientName = "FHIR Oauth"
+    config._Save()
+
+    # Remove the unauthenticated access
+    strategy = iris.cls('HS.FHIRServer.API.InteractionsStrategy').GetStrategyForEndpoint('/fhir/r4')
+    config = strategy.GetServiceConfigData()
+    config.DebugMode = 0
+    strategy.SaveServiceConfigData(config)
+
+def setup_unauthenticated():
+    
+    import iris
+
+    app_key = '/fhir/r4'
+    # get config
+    config = iris.cls('HS.Util.RESTCSPConfig')._OpenId(1)
+    # remove the oauth client name
+    config.OAuthClientName = ''
+    # save the config
+    config._Save()
+
+    #set unauthorized access
+    strategy = iris.cls('HS.FHIRServer.API.InteractionsStrategy').GetStrategyForEndpoint(app_key)
+    config = strategy.GetServiceConfigData()
+    # set the debug mode to 4 = unauthenticated
+    config.DebugMode = 4
+    config.MaxSearchResults = 100000
+    strategy.SaveServiceConfigData(config)
+
+
 if __name__ == '__main__':
     # command line argument is the secret.json file
-    import sys
-    setup_oauth(sys.argv[1])
+    # check if one argument is passed and it is a file
+    if len(sys.argv) != 2 or not os.path.isfile(sys.argv[1]):
+        print("Setup server in unauthenticated mode")
+        setup_unauthenticated()
+        print("The server is setup in unauthenticated mode")
+    else:
+        print("Setting up the oauth2 server")
+        setup_oauth(sys.argv[1])
+        print("The oauth2 server is setup")
