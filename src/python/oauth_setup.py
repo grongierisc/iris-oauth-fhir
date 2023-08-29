@@ -2,11 +2,12 @@ import os
 import sys
 
 import json
+import iris
 
 def setup_oauth(filename):
 
-    os.environ['IRISNAMESPACE'] = '%SYS'
-    import iris
+    # switch namespace to the %SYS namespace
+    iris.system.Process.SetNamespace("%SYS")
 
     # read the secret.json file
     with open(filename) as f:
@@ -56,8 +57,6 @@ def setup_oauth(filename):
     strategy.SaveServiceConfigData(config)
 
 def setup_unauthenticated():
-    
-    import iris
 
     app_key = '/fhir/r4'
     # get config
