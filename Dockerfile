@@ -21,12 +21,6 @@ FROM intersystemsdc/irishealth-community:latest as final
 
 ##### end of multi stage build
 
-# create data dir for persistent IRIS store and change owner to IRIS user
-USER root
-RUN mkdir -p /data
-RUN chown -R ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /data
-USER ${ISC_PACKAGE_MGRUSER}
-
 # script to slim down the image
 ADD --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} https://github.com/grongierisc/iris-docker-multi-stage-script/releases/latest/download/copy-data.py /irisdev/app/copy-data.py
 
