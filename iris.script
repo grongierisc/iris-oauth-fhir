@@ -16,12 +16,6 @@
     // Install elements that are required for a FHIR-enabled namespace
     Do ##class(HS.FHIRServer.Installer).InstallNamespace()
 
-    // load the profile
-    do ##class(HS.FHIRMeta.Load.NpmLoader).importPackages($lb("/irisdev/app/misc/profile"))
-
-    // add the profile to the metadataPackages
-    set metadataPackages = metadataPackages _ $lb("my-profile@0.0.1")
-
     // Install an instance of a FHIR Service into the current namespace
     Do ##class(HS.FHIRServer.Installer).InstallInstance(appKey, strategyClass, metadataPackages, "FHIR Oauth")
 
