@@ -56,6 +56,7 @@ Method %OnNew(pSchema As HS.FHIRServer.Schema) As %Status
 	set ..PythonModule = $system.Util.GetEnviron("OAUTH_MODULE")
 
 	if (..PythonPath = "") || (..PythonClassname = "") || (..PythonModule = "") {
+		// If any of the env vars are not set, then use the default
 		set ..PythonPath = "/irisdev/app/src/python/"
 		set ..PythonClassname = "CustomOAuthInteraction"
 		set ..PythonModule = "custom"
