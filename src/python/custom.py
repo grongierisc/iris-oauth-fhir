@@ -4,7 +4,7 @@ import json
 
 import iris
 
-from FhirInteraction import OAuthInteraction
+from FhirInteraction import OAuthInteraction, Interaction
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -119,4 +119,46 @@ class CustomOAuthInteraction(OAuthInteraction):
     
     def verify_system_level_request(self):
         pass
+
+class CustomInteraction(Interaction):
+
+    def on_after_request(self, fhir_service, fhir_request, fhir_response, body):
+        
+        #extract the token from the header
+        header = "HEADER:X-Goog-Authenticated-User-Id"
+
+        # Upper case the header name
+        header = header.upper()
+
+        # replace - with _
+        header = header.replace("-","_")
+
+        header_value = fhir_request.AdditionalInfo.GetAt(header)
+
+        if fhir_request.AdditionalInfo.GetAt(header) == "" :
+            header_value = "None"
+
+        # Get the resource verb
+        verbe = fhir_request.RequestMethod
+
+        #Get the URL
+        #Extract the URL from the request
+        url = "/" + fhir_request.RequestPath
+
+        if fhir_request.QueryString != "" :
+            url = url + "?" + fhir_request.QueryString
+
+        #Get protocol
+        protocol = "HTTP/1.1"
+
+        #Response code
+        response_code = fhir_response.Status
+
+        #Get the IP address
+        ip = fhir_request.AdditionalInfo.GetAt("ClientAddr")
+            
+        #Create log entry
+        #Format ClientAddr "GET /fhir/r4/Patient?Name=toto HTTP/1.1" 200 token
+        line = f'{ip} "{verbe} {url} {protocol}" {response_code} {header_value}'
+        iris.cls('%SYS.System').WriteToConsoleLog(line,0,0,"FHIR.Server")
 

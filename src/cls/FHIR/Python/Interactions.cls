@@ -3,45 +3,45 @@ Class FHIR.Python.Interactions Extends (HS.FHIRServer.Storage.Json.Interactions,
 
 Parameter OAuth2TokenHandlerClass As %String = "FHIR.Python.OAuth2Token";
 
+Method %OnNew(pStrategy As HS.FHIRServer.Storage.Json.InteractionsStrategy) As %Status
+{
+	// %OnNew is called when the object is created.
+	// The pStrategy parameter is the strategy object that created this object.
+	// The default implementation does nothing
+	// Frist set the python path from an env var
+	set ..PythonPath = $system.Util.GetEnviron("INTERACTION_PATH")
+	// Then set the python class name from the env var
+	set ..PythonClassname = $system.Util.GetEnviron("INTERACTION_CLASS")
+	// Then set the python module name from the env var
+	set ..PythonModule = $system.Util.GetEnviron("INTERACTION_MODULE")
+
+	if (..PythonPath = "") || (..PythonClassname = "") || (..PythonModule = "") {
+		set ..PythonPath = "/irisdev/app/src/python/"
+		set ..PythonClassname = "CustomInteraction"
+		set ..PythonModule = "custom"
+	}
+    
+	// Then set the python class
+	do ..SetPythonPath(..PythonPath)
+	set ..PythonClass = ##class(FHIR.Python.Interactions).GetPythonInstance(..PythonModule, ..PythonClassname)
+
+	quit ##super(pStrategy)
+}
+
 Method OnAfterRequest(
 	pFHIRService As HS.FHIRServer.API.Service,
 	pFHIRRequest As HS.FHIRServer.API.Data.Request,
 	pFHIRResponse As HS.FHIRServer.API.Data.Response)
 {
-    // extract the token from the header
-    set tHeader = "HEADER:X-Goog-Authenticated-User-Id"
-    // Upper case the header name
-    set tHeader = $zconvert(tHeader,"U")
-    // replace - with _
-    set tHeader = $TRANSLATE(tHeader,"-","_")
-    set tHeaderValue = pFHIRRequest.AdditionalInfo.GetAt(tHeader)
-    if pFHIRRequest.AdditionalInfo.GetAt(tHeader) = "" {
-        set tHeaderValue = "None"
-    }
-
-    // Get the resource verb
-    set tVerbe = pFHIRRequest.RequestMethod
-
-    // Get the URL
-    // Extract the URL from the request
-    set tUrl = "/"_pFHIRRequest.RequestPath
-    if pFHIRRequest.QueryString '= "" {
-        set tUrl = tUrl_"?"_pFHIRRequest.QueryString
-    }
-
-    // Get protocol
-    set tProtocol = "HTTP/1.1"
-
-    // Response code
-    set tResponseCode = pFHIRResponse.Status
-
-    // Get the IP address
-    set tIP = pFHIRRequest.AdditionalInfo.GetAt("ClientAddr")
-    
-    // Create log entry
-    // Format ClientAddr "GET /fhir/r4/Patient?Name=toto HTTP/1.1" 200 token
-    set line = tIP_" """_tVerbe_" "_tUrl_" "_tProtocol_""" "_tResponseCode_" "_tHeaderValue
-    do ##class(%SYS.System).WriteToConsoleLog(line,0,0,"FHIR.Server")
+	// OnAfterRequest is called after each request is processed.
+	if $ISOBJECT(..PythonClass) {
+		set body = ##class(%SYS.Python).None()
+		if pFHIRResponse.Json '= "" {
+			set jsonLib = ##class(%SYS.Python).Import("json")
+			set body = jsonLib.loads(pFHIRResponse.Json.%ToJSON())
+		}
+		do ..PythonClass."on_after_request"(pFHIRService, pFHIRRequest, pFHIRResponse, body)
+	}
 }
 
 }
