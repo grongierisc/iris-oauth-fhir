@@ -164,7 +164,7 @@ Client Id and Client Secret are the one you got from the Google Cloud Platform.
 
 ![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Use_Token.jpg?raw=true)
 
-5. Select in Token type, ID Token and click the Use Token button:
+5. Select in Token type, ID Token or Access Token and click the Use Token button:
 
 ![img](https://github.com/grongierisc/iris-oauth-fhir/blob/main/misc/img/Postman_Token_Id.jpg?raw=true)
 
