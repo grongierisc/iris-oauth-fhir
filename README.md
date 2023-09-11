@@ -135,6 +135,8 @@ docker-compose build
 docker-compose up -d
 ```
 
+⚠️ Warning : if the `secret.json` file is not present, the docker image will start in a unauthenticated mode.
+
 ### Test it with Postman
 
 The endpoint is `httsp://localhost:4443/fhir/r4/`.
