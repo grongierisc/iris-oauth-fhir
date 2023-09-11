@@ -51,4 +51,7 @@ COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./entrypoint.sh /en
 # copy the oauth_setup.py script
 COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./src/python/oauth_setup.py /scripts/oauth_setup.py
 
+# copy merge.cpf script
+COPY --chown=${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} ./common.cpf /irisdev/app/common.cpf
+
 ENTRYPOINT [ "/tini", "--", "/entrypoint.sh" ]
