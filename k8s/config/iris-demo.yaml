@@ -109,7 +109,20 @@ spec:
 #         shards: 2
 
 ## deploy mirrored data nodes or data server (default: nonmirrored)
-#         mirrored: true
+      #   mirrored: true
+      # irisDatabases:
+      # - name: interop_data
+      #   directory: /data/interop_data
+      #   mirrored: true
+      # - name: interop_code
+      #   directory: /data/interop_code
+      #   mirrored: true
+
+      # irisNamespaces:
+      # - name: interop
+      #   routines: interop_code
+      #   globals: interop_data
+      #   interop: true
 
 ## override default size and other attributes of predefined storage 
 ## volumes for data nodes (additional volume names: storageWIJ, 
@@ -141,9 +154,9 @@ spec:
 
 ## deploy compute nodes, or application servers if "shards:" not included;
 ## use "replicas:" to specify how many
-#       compute:
-#         image: containers.intersystems.com/intersystems/iris:tag
-#         replicas: 2
+      # compute:
+      #   image: containers.intersystems.com/intersystems/iris:tag
+      #   replicas: 2
 
 ## mount ephemeral volume defined in "volumes:"
 #         volumeMounts:
