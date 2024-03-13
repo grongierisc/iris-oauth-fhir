@@ -316,7 +316,7 @@ docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
 
 #### 2.3.3.3. Prepare the deployment for the web gateway node
 
-The web gateway node is a bit different because we will not be using the `proxyiris:latest` image. We will use the `intersystems/webgateway:2023.1.1.380.0-linux-amd64` image. This image is available on the [InterSystems Container Registry](https://containers.intersystems.com/).
+The web gateway node is a bit different because we will not be using the `proxyiris:latest` image. We will use the `intersystems/webgateway-nginx:2023.3` image. This image is available on the [InterSystems Container Registry](https://containers.intersystems.com/).
 This image is the `raw` web gateway image. 
 
 What are the differences between the `raw` web gateway image and the `proxyiris` image?
@@ -341,14 +341,14 @@ To create the secret, we will use this command line:
 kubectl create secret generic iris-webgateway-secret --from-literal='username=CSPSystem' --from-literal='password=SYS'
 ```
 
-We still need to push the `intersystems/webgateway:2023.1.1.380.0-linux-amd64` image to our registry. We will use the same command line as before:
+We still need to push the `intersystems/webgateway-nginx:2023.3` image to our registry. We will use the same command line as before:
 
 ```bash
-docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-linux-amd64 k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+docker tag containers.intersystems.com/intersystems/webgateway-nginx:2023.3 k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
 ```
 
 ```bash
-docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+docker push k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
 ```
 
 ### 2.3.4. Deploy iriscluster
@@ -483,7 +483,7 @@ spec:
 
 ## deploy webgateway (web server) nodes
     webgateway:
-      image: k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+      image: k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
       type: apache
       replicas: 1
       applicationPaths:
@@ -571,7 +571,7 @@ Now let's see the web gateway node definition:
 ```yaml
 ## deploy webgateway (web server) nodes
     webgateway:
-      image: k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+      image: k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
       type: apache
       replicas: 1
       applicationPaths:
@@ -743,7 +743,7 @@ Tag images
 
 ```bash
 docker tag iris-oauth-fhir-iris:latest k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
-docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-linux-amd64 k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+docker tag containers.intersystems.com/intersystems/webgateway-nginx:2023.3 k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
 docker tag intersystems/iris-operator-amd:3.6.7.100 k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
@@ -751,7 +751,7 @@ Push images
 
 ```bash
 docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
-docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
+docker push k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
 docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
@@ -795,3 +795,8 @@ Deploy Ingress:
 ```bash
 kubectl apply -f k8s/config/ingress.yaml
 ```
+
+Get kubernetes pending pods:
+
+```bash
+

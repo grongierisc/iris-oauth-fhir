@@ -159,13 +159,14 @@ spec:
 
 ## deploy webgateway (web server) nodes
     webgateway:
-      image: k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
-      type: apache
+      image: k3d-registry.localhost:5000/intersystems/webgateway-nginx:2023.3
+      type: nginx
       replicas: 1
       applicationPaths:
         - /csp/sys
         - /csp/healthshare
         - /fhir/r4
+        - /csp/broker
       alternativeServers: LoadBalancing
       loginSecret:
         name: iris-webgateway-secret 
