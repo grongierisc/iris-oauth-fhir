@@ -147,24 +147,24 @@ This means that the cluster is ready. You have now a Kubernetes cluster with one
 ### 2.3.2. Install iris-operator
 
 Now we will install iris-operator. iris-operator is a Kubernetes operator to deploy InterSystems IRIS for Health on Kubernetes. It is available on the [WRC](https://wrc.intersystems.com/wrc/coDistGen.csp) or on the [InterSystems Container Registry](https://containers.intersystems.com/).
-We will use the version 3.6.6.100.
+We will use the version 3.6.7.100.
 
 For example, if you have IKO for the container registry, you can use this command line:
 
 ```bash
-docker pull containers.intersystems.com/intersystems/iris-operator-amd:3.6.6.100
+docker pull containers.intersystems.com/intersystems/iris-operator-amd:3.6.7.100
 ```
 
 Now we will tag the image to push it to our registry:
 
 ```bash
-docker tag intersystems/iris-operator-amd:3.6.6.100 k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
+docker tag intersystems/iris-operator-amd:3.6.7.100 k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
 And we will push it:
 
 ```bash
-docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
+docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
 To install the Iko operator, we will use helm. Helm is a package manager for Kubernetes. It is available [here](https://helm.sh/).
@@ -179,7 +179,7 @@ chmod 700 get_helm.sh
 #### 2.3.2.2. install iris-operator
 
 ```bash
-helm install intersystems k8s/iris_operator_amd-3.6.6.100/chart/iris-operator
+helm install intersystems k8s/iris_operator_amd-3.6.7.100/chart/iris-operator
 ```
 
 To check if the operator is running, you can use this command line:
@@ -744,7 +744,7 @@ Tag images
 ```bash
 docker tag iris-oauth-fhir-iris:latest k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
 docker tag containers.intersystems.com/intersystems/webgateway:2023.1.1.380.0-linux-amd64 k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
-docker tag intersystems/iris-operator-amd:3.6.6.100 k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
+docker tag intersystems/iris-operator-amd:3.6.7.100 k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
 Push images
@@ -752,7 +752,7 @@ Push images
 ```bash
 docker push k3d-registry.localhost:5000/iris-oauth-fhir-iris:latest
 docker push k3d-registry.localhost:5000/intersystems/webgateway:2023.1.1.380.0-linux-amd64
-docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.6.100
+docker push k3d-registry.localhost:5000/intersystems/iris-operator-amd:3.6.7.100
 ```
 
 ## 2.6. Quick deployment
@@ -772,7 +772,7 @@ k3d cluster create demo --servers 1 --agents 2 --volume $(pwd)/k8s/data:/var/lib
 Install iris-operator:
 
 ```bash
-helm install intersystems k8s/iris_operator_amd-3.6.6.100/chart/iris-operator
+helm install intersystems k8s/iris_operator_amd-3.6.7.100/chart/iris-operator
 ```
 
 Create Config and Secret
