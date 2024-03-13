@@ -4,13 +4,15 @@
 replicaCount: 1
 operator:
   registry: k3d-registry.localhost:5000
-  repository: iscinternal/iris-operator-amd
-  tag: 3.6.6.100
+  repository: intersystems/iris-operator-amd
+  tag: 3.6.7.100
 
   # Operator Environment Variables
   useFQDN: true 
-  webserverPort: "52773"  # valid port
+  webserverPort: 52773
   useIrisFsGroup: false 
+  numThreads: 2
+  resyncPeriod: "10m"
 
 # https://github.com/appscodelabs/Dockerfiles/tree/master/kubectl
 cleaner:

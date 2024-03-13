@@ -72,9 +72,13 @@ spec:
         - name: ISC_USE_FQDN
           value: {{ default "true" (quote .Values.operator.useFQDN)}}
         - name: ISC_WEBSERVER_PORT
-          value: {{ default "52773"  (quote .Values.operator.webserverPort)}} 
+          value: {{ default "52773"  (quote .Values.operator.webserverPort)}}
         - name: ISC_USE_IRIS_FSGROUP
           value: {{ default "false" (quote .Values.operator.useIrisFsGroup)}}
+        - name: ISC_NUM_THREADS
+          value: {{ default "2" (quote .Values.operator.numThreads)}}
+        - name: ISC_RESYNC_PERIOD
+          value: {{ default "10m" (quote .Values.operator.resyncPeriod)}}
 {{- if .Values.apiserver.healthcheck.enabled }}
         readinessProbe:
           httpGet:

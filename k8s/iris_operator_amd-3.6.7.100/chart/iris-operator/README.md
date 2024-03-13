@@ -12,7 +12,7 @@ Please see linked documentation above for pre-requisites and installation proced
 To install the chart with the release name `iris-operator`:
 
 ```console
-$ helm install intersystems iris_operator_amd-3.5.48.100/chart/iris-operator --namespace intersystems 
+$ helm install intersystems iris_operator-3.3.0.120/chart/iris-operator --namespace intersystems 
 ```
 
 The command deploys IRIS operator on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
